@@ -1,0 +1,34 @@
+{
+  "name": "JiTu",
+  "version": "0.0.1",
+  "manifest_version": 2,
+  "description": "Collect images from web pages.",
+  "homepage_url": "http://jitu.qiniu.com",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "default_locale": "en",
+  "background": {
+    "page": "src/bg/background.html",
+    "persistent": true
+  },
+  "options_page": "src/options_custom/index.html",
+  "permissions": [
+    "contextMenus",
+    "tabs",
+    "http://*/*",
+    "https://*/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.google.com/*"
+      ],
+      "js": [
+        "src/inject/inject.js"
+      ]
+    }
+  ]
+}
