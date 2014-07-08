@@ -17,7 +17,6 @@
 
     // Images
     $('#show_image_url_checkbox').prop('checked', values.show_image_url === 'true');
-    $('#show_open_image_button_checkbox').prop('checked', values.show_open_image_button === 'true');
     $('#show_download_image_button_checkbox').prop('checked', values.show_download_image_button === 'true');
 
     $('#columns_numberbox').val(values.columns);

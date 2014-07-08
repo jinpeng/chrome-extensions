@@ -48,11 +48,10 @@
     show_only_images_from_links: true,
     // Images
     show_image_url: true,
-    show_open_image_button: true,
     show_download_image_button: true,
     columns: 1,
-    image_min_width: 50,
-    image_max_width: 200,
+    image_min_width: 250,
+    image_max_width: 350,
     image_border_width: 3,
     image_border_color: '#3498db'
   };

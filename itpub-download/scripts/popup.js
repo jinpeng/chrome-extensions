@@ -148,12 +148,6 @@
         chrome.downloads.download({
           url: $(this).data('url')
         });
-      })
-      .on('click', '.open_image_button', function() {
-        chrome.tabs.create({
-          url: $(this).data('url'),
-          active: false
-        });
       });
 
     // Get images on the page
@@ -316,12 +310,11 @@
 
     // Tools row
     var show_image_url = ls.show_image_url === 'true';
-    var show_open_image_button = ls.show_open_image_button === 'true';
     var show_download_image_button = ls.show_download_image_button === 'true';
 
     // Append dummy image row to keep the popup width constant
     var dummy_row = $('<tr></tr>');
-    var colspan = ((show_image_url ? 1 : 0) + (show_open_image_button ? 1 : 0) + (show_download_image_button ? 1 : 0)) || 1;
+    var colspan = ((show_image_url ? 1 : 0) + (show_download_image_button ? 1 : 0)) || 1;
     for (var columnIndex = 0; columnIndex < columns; columnIndex++) {
       var dummy_cell = '<td colspan="' + colspan + '" style="min-width: ' + ls.image_max_width + 'px; width: ' + columnWidth + '; vertical-align: top;"></td>';
       dummy_row.append(dummy_cell);
@@ -329,7 +322,7 @@
     images_table.append(dummy_row);
 
     for (var rowIndex = 0; rowIndex < rows; rowIndex++) {
-      if (show_image_url || show_open_image_button || show_download_image_button) {
+      if (show_image_url || show_download_image_button) {
         var tools_row = $('<tr></tr>');
         for (var columnIndex = 0; columnIndex < columns; columnIndex++) {
           var index = rowIndex * columns + columnIndex;
@@ -337,10 +330,6 @@
 
           if (show_image_url) {
             tools_row.append('<td><input type="text" id="image' + index + '" class="image_url_textbox" value="' + linkedImages[visibleImages[index]] + '" readonly /></td>');
-          }
-
-          if (show_open_image_button) {
-            tools_row.append('<td class="open_image_button" data-url="' + visibleImages[index] + '" title="Open in new tab">&nbsp;</td>');
           }
 
           if (show_download_image_button) {
