@@ -63,3 +63,22 @@
 
   ls.options = JSON.stringify(Object.keys(defaults));
 }(localStorage));
+
+chrome.runtime.onInstalled.addListener(function() {
+  // Replace all rules ...
+  chrome.declarativeContent.onPageChanged.removeRules(undefined, function() {
+    // With a new rule ...
+    chrome.declarativeContent.onPageChanged.addRules([
+      {
+        // That fires when a page's URL is itpub.net forum detail page: http://www.itpub.net/thread-1876279-1-3.html
+        conditions: [
+          new chrome.declarativeContent.PageStateMatcher({
+            pageUrl: { hostEquals: 'www.itpub.net', schemes: ['http'],  pathContains: '/thread', pathSuffix: 'html' },
+          })
+        ],
+        // And shows the extension's page action.
+        actions: [ new chrome.declarativeContent.ShowPageAction() ]
+      }
+    ]);
+  });
+});

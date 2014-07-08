@@ -5,10 +5,12 @@
   "minimum_chrome_version": "31",
   "manifest_version": 2,
   "permissions": [
+    "declarativeContent",
     "downloads",
     "<all_urls>"
   ],
-  "browser_action": {
+  "page_action": {
+    "default_title": "Itpub Download",
     "default_icon": "/icon128.png",
     "default_popup": "/views/popup.html"
   },
