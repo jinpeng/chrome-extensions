@@ -232,11 +232,13 @@
 
       if (ls.show_url_filter === 'true') {
         var filterValue = $('#filter_textbox').val();
+          console.log("filtering... " + filterValue);
         if (filterValue) {
           switch (ls.filter_url_mode) {
             case 'normal':
               var terms = filterValue.split(' ');
               visibleImages = visibleImages.filter(function(url) {
+                var title = linkedImages[url];
                 for (var i = 0; i < terms.length; i++) {
                   var term = terms[i];
                   if (term.length !== 0) {
@@ -247,7 +249,7 @@
                         continue;
                       }
                     }
-                    var found = (url.indexOf(term) !== -1);
+                    var found = (title.indexOf(term) !== -1);
                     if (found !== expected) {
                       return false;
                     }
@@ -262,7 +264,8 @@
             case 'regex':
               visibleImages = visibleImages.filter(function(url) {
                 try {
-                  return url.match(filterValue);
+                  var title = linkedImages[url];
+                  return title.match(filterValue);
                 } catch (e) {
                   return false;
                 }
