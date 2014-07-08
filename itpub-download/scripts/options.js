@@ -11,9 +11,6 @@
 
     // Filters
     $('#show_url_filter_checkbox').prop('checked', values.show_url_filter === 'true');
-    $('#show_image_width_filter_checkbox').prop('checked', values.show_image_width_filter === 'true');
-    $('#show_image_height_filter_checkbox').prop('checked', values.show_image_height_filter === 'true');
-    $('#show_only_images_from_links_checkbox').prop('checked', values.show_only_images_from_links === 'true');
 
     // Images
     $('#show_image_url_checkbox').prop('checked', values.show_image_url === 'true');
@@ -40,9 +37,6 @@
 
     // Filters
     ls.show_url_filter = $('#show_url_filter_checkbox').prop('checked');
-    ls.show_image_width_filter = $('#show_image_width_filter_checkbox').prop('checked');
-    ls.show_image_height_filter = $('#show_image_height_filter_checkbox').prop('checked');
-    ls.show_only_images_from_links = $('#show_only_images_from_links_checkbox').prop('checked');
 
     // Images
     ls.show_image_url = $('#show_image_url_checkbox').prop('checked');

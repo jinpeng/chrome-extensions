@@ -36,79 +36,6 @@
       });
     }
 
-    if (ls.show_image_width_filter === 'true' || ls.show_image_height_filter === 'true') {
-      // Image dimension filters
-      var serializeSliderValue = function(label, option) {
-        return $.Link({
-          target: function(value) {
-            $('#' + label).html(value + 'px');
-            ls[option] = value;
-            filterImages();
-          }
-        });
-      };
-
-      var toggleDimensionFilter = function(label, option, value) {
-        if (value !== undefined) ls[option] = value;
-        $('#' + label).toggleClass('light', ls[option] !== 'true');
-        filterImages();
-      };
-
-      var initializeFilter = function(dimension) {
-        $('#image_' + dimension + '_filter_slider').noUiSlider({
-          behaviour: 'extend-tap',
-          connect: true,
-          range: {
-            min: parseInt(ls['filter_min_' + dimension + '_default']),
-            max: parseInt(ls['filter_max_' + dimension + '_default'])
-          },
-          step: 10,
-          start: [ls['filter_min_' + dimension], ls['filter_max_' + dimension]],
-          serialization: {
-            lower: [serializeSliderValue('image_' + dimension + '_filter_min', 'filter_min_' + dimension)],
-            upper: [serializeSliderValue('image_' + dimension + '_filter_max', 'filter_max_' + dimension)],
-            format: {
-              decimals: 0
-            }
-          }
-        });
-
-        toggleDimensionFilter('image_' + dimension + '_filter_min', 'filter_min_' + dimension + '_enabled');
-        $('#image_' + dimension + '_filter_min_checkbox')
-          .prop('checked', ls['filter_min_' + dimension + '_enabled'] === 'true')
-          .on('change', function() {
-            toggleDimensionFilter('image_' + dimension + '_filter_min', 'filter_min_' + dimension + '_enabled', this.checked);
-          });
-
-        toggleDimensionFilter('image_' + dimension + '_filter_max', 'filter_max_' + dimension + '_enabled');
-        $('#image_' + dimension + '_filter_max_checkbox')
-          .prop('checked', ls['filter_max_' + dimension + '_enabled'] === 'true')
-          .on('change', function() {
-            toggleDimensionFilter('image_' + dimension + '_filter_max', 'filter_max_' + dimension + '_enabled', this.checked);
-          });
-      };
-
-      // Image width filter
-      if (ls.show_image_width_filter === 'true') {
-        initializeFilter('width');
-      }
-
-      // Image height filter
-      if (ls.show_image_height_filter === 'true') {
-        initializeFilter('height');
-      }
-    }
-
-    // Other filters
-    if (ls.show_only_images_from_links === 'true') {
-      $('#only_images_from_links_checkbox')
-        .prop('checked', ls.only_images_from_links === 'true')
-        .on('change', function() {
-          ls.only_images_from_links = this.checked;
-          filterImages();
-        });
-    }
-
     $('#images_table')
       .on('change', '#toggle_all_checkbox', function() {
         $('#download_button').prop('disabled', !this.checked);
@@ -157,7 +84,7 @@
         windowId: currentWindow.id
       }, function(activeTabs) {
         chrome.tabs.executeScript(activeTabs[0].id, {
-          file: '/scripts/send_images.js',
+          file: '/scripts/contentscript.js',
           allFrames: true
         });
       });
@@ -167,9 +94,6 @@
   function initializeStyles() {
     // Filters
     $('#image_url_filter').toggle(ls.show_url_filter === 'true');
-    $('#image_width_filter').toggle(ls.show_image_width_filter === 'true');
-    $('#image_height_filter').toggle(ls.show_image_height_filter === 'true');
-    $('#only_images_from_links_container').toggle(ls.show_only_images_from_links === 'true');
 
     // Images
     jss.set('.image_buttons_container', {
@@ -199,7 +123,7 @@
   var attachmentTexts = {};
 
   // Add images to `allImages` and trigger filtration
-  // `send_images.js` is injected into all frames of the active tab, so this listener may be called multiple times
+  // `contentscript.js` is injected into all frames of the active tab, so this listener may be called multiple times
   chrome.extension.onMessage.addListener(function(result) {
     $.extend(linkedImages, result.linkedImages);
     $.extend(attachmentTexts, result.attachmentTexts);
@@ -216,17 +140,6 @@
   function filterImages() {
     clearTimeout(timeoutID); // Cancel pending filtration
     timeoutID = setTimeout(function() {
-      var images_cache = $('#images_cache');
-      if (ls.show_image_width_filter === 'true' || ls.show_image_height_filter === 'true') {
-        var cached_images = images_cache.children().length;
-        if (cached_images < allImages.length) {
-          for (var i = cached_images; i < allImages.length; i++) {
-            // Refilter the images after they're loaded in cache
-            images_cache.append($('<img src="' + allImages[i] + '" />').on('load', filterImages));
-          }
-        }
-      }
-
       // Copy all images initially
       visibleImages = allImages.slice(0);
 
@@ -278,20 +191,6 @@
       if (ls.show_only_images_from_links === 'true' && ls.only_images_from_links === 'true') {
         visibleImages = visibleImages.filter(function(url) {
           return linkedImages[url];
-        });
-      }
-
-      if (ls.show_image_width_filter === 'true' || ls.show_image_height_filter === 'true') {
-        visibleImages = visibleImages.filter(function(url) {
-          var image = images_cache.children('img[src="' + url + '"]')[0];
-          return (ls.show_image_width_filter !== 'true' ||
-              (ls.filter_min_width_enabled !== 'true' || ls.filter_min_width <= image.naturalWidth) &&
-              (ls.filter_max_width_enabled !== 'true' || image.naturalWidth <= ls.filter_max_width)
-            ) &&
-            (ls.show_image_height_filter !== 'true' ||
-              (ls.filter_min_height_enabled !== 'true' || ls.filter_min_height <= image.naturalHeight) &&
-              (ls.filter_max_height_enabled !== 'true' || image.naturalHeight <= ls.filter_max_height)
-            );
         });
       }
 
