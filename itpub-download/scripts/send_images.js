@@ -5,7 +5,7 @@
   var itpubDownloader = {
     //http://www.itpub.net/attachment.php?aid=OTIzNzAxfDQyYzhjNDRkfDE0MDQ0NjYwMjB8MzUwMTczfDE4NzU4NDA%3D&fid=61 
     //href = href.replace("attachment.php?", "forum.php?mod=attachment&");
-    attachmentRegexp: /attachment.php\?aid/,
+    attachmentRegexp: /attachment.php\?aid=[a-zA-Z0-9]+%3D&fid/,
     mapElement: function(element) {
       if (element.tagName.toLowerCase() === 'a') {
         var href = element.href;
@@ -13,7 +13,7 @@
           href = href.replace(/attachment.php\?/, "forum.php?mod=attachment&");
           var text = element.text;
           itpubDownloader.attachmentTexts[href] = text;
-          console.log(text);
+          console.log(text + " | " + href);
           itpubDownloader.linkedImages[href] = text;
           return href;
         }
