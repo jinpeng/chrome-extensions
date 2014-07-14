@@ -71,11 +71,8 @@ chrome.runtime.onInstalled.addListener(function() {
         // http://www.itpub.net/thread-1876279-1-3.html or http://www.itpub.net/forum.php?mod=viewthread&tid=1835016
         conditions: [
           new chrome.declarativeContent.PageStateMatcher({
-            pageUrl: { hostEquals: 'www.itpub.net', schemes: ['http'],  pathContains: 'thread', pathSuffix: 'html' },
+            pageUrl: { hostEquals: 'www.itpub.net', schemes: ['http'],  urlContains: 'thread' },
           }),
-          new chrome.declarativeContent.PageStateMatcher({
-            pageUrl: { hostEquals: 'www.itpub.net', schemes: ['http'],   pathEquals: '/forum.php' queryContains: 'mod=viewthread' },
-          })
         ],
         // And shows the extension's page action.
         actions: [ new chrome.declarativeContent.ShowPageAction() ]
